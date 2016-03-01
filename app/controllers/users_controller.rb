@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:edit, :update, :show]
+  before_action :logged_in_user, only: [:edit, :update, :show]
+  before_action :authenticate, only: [:edit, :update]
+
   def show
     @user = User.find(params[:id])
   end
@@ -40,4 +43,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
   
+  def authenticate
+    if @user != current_user
+      flash[:danger] = "不正なアクセスです。ログインしなおしてください。"
+      redirect_to root_url
+    end
+  end
 end
